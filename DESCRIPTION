@@ -1,0 +1,15 @@
+Package: pvac
+Type: Package
+Title:  PCA-based gene filtering for Affymetrix arrays
+Version: 0.99.0
+Date: 2010-12-30
+Author: Jun Lu and Pierre R. Bushel
+Maintainer: Jun Lu <lujun@niehs.nih.gov>, Pierre R. Bushel <bushel@niehs.nih.gov>
+Description: The package contains the function for filtering genes by the proportion of variation accounted for by the first principal component (PVAC).
+License: LGPL (>= 2.0)
+Imports: affy (>= 1.20.0), stats, Biobase
+Depends: R (>= 2.8.0)
+Suggests: pbapply, affydata, ALLMLL, genefilter
+biocViews: Bioinformatics, Microarray, OneChannel, QualityControl
+LazyLoad: yes
+

@@ -1,0 +1,131 @@
+
+%\VignetteIndexEntry{PCA-based gene filtering for Affymetrix GeneChips}
+%\VignetteDepends{pvac, genefilter, ALLMLL}
+%\VignettePackage{pvac}
+\documentclass[12pt]{article}
+\usepackage{hyperref}
+%\usepackage[authoryear, round]{natbib}
+\textwidth=6.2in
+\textheight=8.5in
+\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand\Rpackage[1]{{\textsf{#1}\index{#1 (package)}}}
+\newcommand\dataset[1]{{\textit{#1}\index{#1 (data set)}}}
+\newcommand\Rclass[1]{{\textit{#1}\index{#1 (class)}}}
+\newcommand\Rfunction[1]{{{\small\texttt{#1}}\index{#1 (function)}}}
+\newcommand\Rfunarg[1]{{\small\texttt{#1}}}
+\newcommand\Robject[1]{{\small\texttt{#1}}}
+
+\author{Jun Lu, Pierre R. Bushel}
+
+\begin{document}
+\title{Gene filtering by PCA for Affymetrix GeneChips}
+\maketitle
+\tableofcontents
+
+\section{Introduction}
+Due to the nature of the array experiments which examine the expression of tens of thousands of genes (or probesets) simultaneously, the number of null hypotheses to be tested is large. Hence multiple testing correction is often necessary to control the number of false positives. However, multiple testing correction can lead to low statistical power in detecting genes that are truly differentially expressed.
+Filtering out non-informative genes allows for a reduction of the number of hypotheses, which potentially can reduce the impact of multiple testing corrections. While several filtering methods have been suggested  \cite{bourgon10}, the best practice to filtering is still under debate. We propose a new filtering statistic for Affymetrix GeneChips, based on principal component analysis (PCA) on the probe-level gene expression data. Given that all the probes in a probeset are designed to target one or a common  cluster of transcripts, the measurements of probes in a probeset  should be correlated. The degree of concordance of gene expression  among probes can be approximated by the proportion of variation  accounted by the first principal component (PVAC). Using  a wholly defined spike-in dataset, We have shown that filtering by PVAC provides increased sensitivity in detecting truly differentially expressed genes while controlling the false discoveries. Furthermore, a data-driven approach to guide the selection of the filtering threshold value is also proposed.
+
+The \Rpackage{pvac} package implements the method
+proposed in the paper: \emph{Jun Lu, Robnet T. Kerns, Shyamal Peddada, and Pierre R. Bushel 2011
+``Principal component analysis-based filtering improves detection for Affymetrix gene expression arrays'' (submitted). }
+
+In the sections below, we provide instructions on how to perform the PCA-based gene filtering using this package, and an example for demonstration.
+
+\section{Installation}
+Simply skip this section if one has been familiar with the usual Bioconductor installation process. Assume that a recent version of R has been correctly installed.
+
+Install the packages from the Bioconductor repository, using the \verb'biocLite' utility. Within R console, type
+<<install, echo=TRUE, eval=FALSE>>=
+  source("http://bioconductor.org/biocLite.R")
+  biocLite(c("pvac","pvacExampleData"))
+@
+
+Installation using the \verb'biocLite' utility automatically handles the package dependencies. The \verb'pvac' package
+depends on the package \verb'affy', which can be installed in the same way as shown above. We also recommed to install the package
+\verb'pbapply' (for showing a progress bar).
+
+
+\section{Gene filtering by PCA}
+PCA-based filtering  requires the probe level data ({\it Cel} files). Also, note that filtering is performed using either all samples, or a subset of samples chosen by ignoring the sample class labels. Ideally the total number of samples should be at least 6 in order to make the PCA-based filtering effective.
+
+\subsection{Steps}
+These are a few steps for a typical analysis. Here assume all the {\it Cel} files are put in a directory, say /my/directory/celfiles
+\begin{enumerate}
+\item Read in the {\it Cel} files and store in an \verb'AffyBatch' object
+<<steps,echo=T,eval=FALSE>>=
+  library(affy)
+  abatch <- ReadAffy(celfile.path="/my/directory/celfiles")
+@
+\item Summarize the probe level data into probeset level data, and store them in an \verb'ExpressionSet' object.
+Here we use the method called \verb'rma' as an example,
+<<steps,echo=T,eval=FALSE>>=
+  myeset <- rma(abatch)
+@
+\item Perform gene filtering and exclude probesets with low concordance in probe intensity measurements
+<<steps,echo=T,eval=FALSE>>=
+  library(pvac)
+  ft <- pvacFilter(abatch)
+  myeset <- eset[ft$aset,]
+@
+Here the \verb'myeset' is an \verb'ExpressionSet' object containing probesets that have passed the default filtering
+ threshold. To see additional information returned by  \verb'pvacFilter', type \verb'?pvacFilter'.
+\item  Identify the differentially expressed genes. In the case of a two-group comparison, one can use the simple t test to identify the genes of interest. Given a vector \verb'group' which contains the group indicators for the samples (from the function call \verb'sampleNames(myeset)'), one can do,
+<<<steps,echo=T,eval=FALSE>>=
+  library(genefilter)
+  myres  = rowttests(exprs(myeset), as.factor(group))
+@
+
+\end{enumerate}
+
+\subsection{Example}
+We use \verb'MLL.A' dataset in the package \verb'ALLMLL' as an example to illustrate the PCA filtering procedure. This dataset contains 20 samples from a leukemia study with RNAs hybridized on the HGU133A chip. The data have been stored in an \verb'AffyBatch' object. First we perform the usual summarization and then filtering.
+<<example,echo=T,eval=TRUE>>=
+library(affy)
+library(pvac)
+library(ALLMLL)
+data(MLL.A)
+myeset <- rma(MLL.A)
+ft <- pvacFilter(MLL.A)
+myeset.filtered <- myeset[ft$aset,]
+@
+
+The \verb'pvac' package selects the filtering threshold by first identifying a group of probesets being called ``Absent'' across all samples
+by the \verb'mas5' algorithm (in the \verb'affy' package). The 99 percentile value of the PVAC scores in this (null)
+ set of probesets is chosen as the default cutoff value. Certainly one can lower the percentile value to relax the filtering threshold if necessary. In addition,
+ the maximum value of the threshold value is set at 0.5, which corresponds to 50\% of the total variation accounted for by the first PC.
+
+We can plot the distributions of the PVAC scores as shown in Figure 1.
+<<plot,echo=T,eval=FALSE>>=
+plot(density(ft$pvac[ft$nullset]),xlab="PVAC score",main="",
+          col="gray",cex.lab=0.5,xlim=c(0,1))
+lines(density(ft$pvac),col=1)
+abline(v=ft$cutoff,lty=2,col="gray")
+@
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=12cm,type=pdf,ext=.pdf,read=.pdf]{density}
+\caption{Density plots of PVAC scores from a group of ``Absent'' probesets (in gray) and the full set (in black). The vertical gray line indicates the default filtering cutoff value. }
+\end{center}
+\end{figure}
+
+\section{Session}
+<<<>>=
+  print(sessionInfo())
+@
+
+\begin{thebibliography}{}
+\bibitem{bourgon10}
+Richard Bourgona, Robert Gentlemanb, and Wolfgang Huber. (2010)
+\textsl{Independent filtering increases detection power for high-throughput experiments} PNAS {\bf 107}(21), 9546-9551
+\end{thebibliography}
+
+%\bibliographystyle{plainnat}
+%\bibliography{pvac}
+
+\end{document}

@@ -1,0 +1,11 @@
+
+importMethodsFrom(affy, mas5calls, pm, probeNames)
+
+importFrom(affy, bg.correct.rma, normalize.AffyBatch.quantiles)
+
+importFrom(Biobase, exprs, featureNames)
+
+importFrom(stats, quantile)
+
+##export everything that does not start with a .
+exportPattern("^[^\\.]")
