@@ -28,7 +28,7 @@
 
 \section{Introduction}
 Due to the nature of the array experiments which examine the expression of tens of thousands of genes (or probesets) simultaneously, the number of null hypotheses to be tested is large. Hence multiple testing correction is often necessary to control the number of false positives. However, multiple testing correction can lead to low statistical power in detecting genes that are truly differentially expressed.
-Filtering out non-informative genes allows for a reduction of the number of hypotheses, which potentially can reduce the impact of multiple testing corrections. While several filtering methods have been suggested  \cite{bourgon10}, the best practice to filtering is still under debate. We propose a new filtering statistic for Affymetrix GeneChips, based on principal component analysis (PCA) on the probe-level gene expression data. Given that all the probes in a probeset are designed to target one or a common  cluster of transcripts, the measurements of probes in a probeset  should be correlated. The degree of concordance of gene expression  among probes can be approximated by the proportion of variation  accounted by the first principal component (PVAC). Using  a wholly defined spike-in dataset, We have shown that filtering by PVAC provides increased sensitivity in detecting truly differentially expressed genes while controlling the false discoveries. Furthermore, a data-driven approach to guide the selection of the filtering threshold value is also proposed.
+Filtering out non-informative genes allows for a reduction of the number of hypotheses, which potentially can reduce the impact of multiple testing corrections. While several filtering methods have been suggested  \cite{bourgon10}, the best practice to filtering is still under debate. We propose a new filtering statistic for Affymetrix GeneChips, based on principal component analysis (PCA) on the probe-level gene expression data. Given that all the probes in a probeset are designed to target one or a common  cluster of transcripts, the measurements of probes in a probeset  should be correlated. The degree of concordance of gene expression  among probes can be approximated by the proportion of variation  accounted by the first principal component (PVAC). Using  a wholly defined spike-in dataset, we have shown that filtering by PVAC provides increased sensitivity in detecting truly differentially expressed genes while controlling the false discoveries. Furthermore, a data-driven approach to guide the selection of the filtering threshold value is also proposed.
 
 The \Rpackage{pvac} package implements the method
 proposed in the paper: \emph{Jun Lu, Robnet T. Kerns, Shyamal Peddada, and Pierre R. Bushel 2011
@@ -121,7 +121,7 @@ abline(v=ft$cutoff,lty=2,col="gray")
 
 \begin{thebibliography}{}
 \bibitem{bourgon10}
-Richard Bourgona, Robert Gentlemanb, and Wolfgang Huber. (2010)
+Richard Bourgona, Robert Gentleman, and Wolfgang Huber. (2010)
 \textsl{Independent filtering increases detection power for high-throughput experiments} PNAS {\bf 107}(21), 9546-9551
 \end{thebibliography}
 
