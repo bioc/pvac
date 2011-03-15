@@ -42,7 +42,7 @@ Simply skip this section if one has been familiar with the usual Bioconductor in
 Install the packages from the Bioconductor repository, using the \verb'biocLite' utility. Within R console, type
 <<install, echo=TRUE, eval=FALSE>>=
   source("http://bioconductor.org/biocLite.R")
-  biocLite(c("pvac","pvacExampleData"))
+  biocLite("pvac")
 @
 
 Installation using the \verb'biocLite' utility automatically handles the package dependencies. The \verb'pvac' package
