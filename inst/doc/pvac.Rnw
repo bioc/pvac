@@ -32,7 +32,7 @@ Filtering out non-informative genes allows for a reduction of the number of hypo
 
 The \Rpackage{pvac} package implements the method
 proposed in the paper: \emph{Jun Lu, Robnet T. Kerns, Shyamal Peddada, and Pierre R. Bushel 2011
-``Principal component analysis-based filtering improves detection for Affymetrix gene expression arrays'' (submitted). }
+``Principal component analysis-based filtering improves detection for Affymetrix gene expression arrays'' Nucleic Acids Res. 39(13):e86. }
 
 In the sections below, we provide instructions on how to perform the PCA-based gene filtering using this package, and an example for demonstration.
 
@@ -46,12 +46,12 @@ Install the packages from the Bioconductor repository, using the \verb'biocLite'
 @
 
 Installation using the \verb'biocLite' utility automatically handles the package dependencies. The \verb'pvac' package
-depends on the package \verb'affy', which can be installed in the same way as shown above. We also recommed to install the package
+depends on the package \verb'affy', which can be installed in the same way as shown above. We also recommend to install the package
 \verb'pbapply' (for showing a progress bar).
 
 
 \section{Gene filtering by PCA}
-PCA-based filtering  requires the probe level data ({\it Cel} files). Also, note that filtering is performed using either all samples, or a subset of samples chosen by ignoring the sample class labels. Ideally the total number of samples should be at least 6 in order to make the PCA-based filtering effective.
+PCA-based filtering  requires the probe level data ({\it Cel} files). Also, note that filtering is performed using either all samples, or a subset of samples chosen by ignoring the sample class labels. Outlier samples should be removed before filtering. Ideally the number of samples should be at least 6 in order to make the PCA-based filtering effective.
 
 \subsection{Steps}
 These are a few steps for a typical analysis. Here assume all the {\it Cel} files are put in a directory, say /my/directory/celfiles
