@@ -39,14 +39,14 @@ In the sections below, we provide instructions on how to perform the PCA-based g
 \section{Installation}
 Simply skip this section if one has been familiar with the usual Bioconductor installation process. Assume that a recent version of R has been correctly installed.
 
-Install the packages from the Bioconductor repository, using the \verb'biocLite' utility. Within R console, type
+Install the packages from the Bioconductor repository, using the \verb'BiocManager::install' function. Within R console, type:
 <<install, echo=TRUE, eval=FALSE>>=
   if (!requireNamespace("BiocManager", quietly=TRUE))
       install.packages("BiocManager")
   BiocManager::install("pvac")
 @
 
-Installation using the \verb'biocLite' utility automatically handles the package dependencies. The \verb'pvac' package
+Installation using the \verb'BiocManager::install' function automatically handles the package dependencies. The \verb'pvac' package
 depends on the package \verb'affy', which can be installed in the same way as shown above. We also recommend to install the package
 \verb'pbapply' (for showing a progress bar).
 
